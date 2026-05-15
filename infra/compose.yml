@@ -1,0 +1,16 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: university-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-university}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      TZ: ${TZ:-Asia/Shanghai}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./mysql-data:/var/lib/mysql

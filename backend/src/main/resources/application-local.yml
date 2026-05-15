@@ -1,0 +1,24 @@
+logging:
+  level:
+    com.university.backend: INFO
+
+server:
+  port: 8081
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3307/school2?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+
+app:
+  cors:
+    allowed-origins:
+      - http://localhost:5173
+      - http://localhost:5174
+      - http://127.0.0.1:5173
+      - http://127.0.0.1:5174
+  file-storage:
+    root-path: upload
+    public-base-url: http://localhost:8081/api/v1/files

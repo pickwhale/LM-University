@@ -1,0 +1,10 @@
+*.class
+*.log
+*.iml
+.idea/
+target/
+backend/target/
+**/node_modules/
+**/dist/
+data/
+.DS_Store
