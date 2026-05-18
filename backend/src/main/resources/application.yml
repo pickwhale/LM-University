@@ -13,13 +13,15 @@ spring:
     url: ${DB_URL:jdbc:mysql://127.0.0.1:3307/school2?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai}
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:root}
+
+
+
   jackson:
     default-property-inclusion: non_null
   servlet:
     multipart:
       max-file-size: 20MB
       max-request-size: 20MB
-
 management:
   endpoints:
     web:
@@ -32,6 +34,18 @@ mybatis-plus:
     map-underscore-to-camel-case: false
   global-config:
     banner: false
+
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+    database: ${REDIS_DATABASE:0}
+    timeout: 2000ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
 
 springdoc:
   api-docs:
@@ -54,3 +68,4 @@ app:
   file-storage:
     root-path: ${APP_FILE_STORAGE_ROOT:${user.dir}/data/uploads}
     public-base-url: ${APP_FILE_PUBLIC_BASE_URL:http://localhost:8081/api/v1/files}
+

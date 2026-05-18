@@ -12,9 +12,12 @@ import com.university.backend.university.dto.UniversityRequest;
 import java.util.ArrayList;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
 
 @Service
 public class UniversityService {
+
 
     private final LegacyUniversityInformationMapper universityMapper;
     private final LegacyProvinceMapper provinceMapper;
@@ -43,7 +46,7 @@ public class UniversityService {
         Page<LegacyUniversityInformation> legacyPage = universityMapper.selectPage(Page.of(page, size), wrapper);
         return mapPage(legacyPage);
     }
-
+    //@Cacheable(value = "university", key = "#id")
     public Page<University> pageAdmin(long page, long size, String keyword) {
         return pagePublic(page, size, keyword, null);
     }
@@ -59,14 +62,14 @@ public class UniversityService {
         universityMapper.insert(university);
         return map(university);
     }
-
+   // @CacheEvict(value = "university", key = "#id")
     public University update(Long id, UniversityRequest request) {
         LegacyUniversityInformation university = getLegacyRequired(id);
         apply(university, request);
         universityMapper.updateById(university);
         return map(university);
     }
-
+    //@CacheEvict(value = "university", key = "#id")
     public void delete(Long id) {
         if (universityMapper.deleteById(id) == 0) {
             throw ApiException.notFound("University not found");
