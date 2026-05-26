@@ -6,6 +6,7 @@ import com.university.backend.major.application.MajorService;
 import com.university.backend.major.domain.Major;
 import com.university.backend.major.dto.MajorRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +31,9 @@ public class AdminMajorController {
     public ApiResponse<PageResponse<Major>> majors(
         @RequestParam(defaultValue = "1") long page,
         @RequestParam(defaultValue = "10") long size,
-        @RequestParam(required = false) String keyword
+        @RequestParam(required = false)
+        @Pattern(regexp = "^[a-zA-Z -]*$", message = "搜索关键词只能包含字母、空格和连字符")
+        String keyword
     ) {
         return ApiResponse.ok(PageResponse.from(majorService.pageAdmin(page, size, keyword)));
     }

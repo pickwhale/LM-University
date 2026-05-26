@@ -28,10 +28,10 @@ public class AdmissionService {
     private final StudentProfileService studentProfileService;
 
     public AdmissionService(
-        LegacyAdmissionResultsMapper admissionResultMapper,
-        LegacyResultsInformationMapper academicResultMapper,
-        LegacyCollegeApplicationMapper universityApplicationMapper,
-        StudentProfileService studentProfileService
+            LegacyAdmissionResultsMapper admissionResultMapper,
+            LegacyResultsInformationMapper academicResultMapper,
+            LegacyCollegeApplicationMapper universityApplicationMapper,
+            StudentProfileService studentProfileService
     ) {
         this.admissionResultMapper = admissionResultMapper;
         this.academicResultMapper = academicResultMapper;
@@ -41,7 +41,7 @@ public class AdmissionService {
 
     public Page<AdmissionResult> pageAdminAdmission(long page, long size) {
         return mapAdmissionPage(
-            admissionResultMapper.selectPage(Page.of(page, size), new LambdaQueryWrapper<LegacyAdmissionResults>().orderByDesc(LegacyAdmissionResults::getAddtime))
+                admissionResultMapper.selectPage(Page.of(page, size), new LambdaQueryWrapper<LegacyAdmissionResults>().orderByDesc(LegacyAdmissionResults::getAddtime))
         );
     }
 
@@ -71,16 +71,16 @@ public class AdmissionService {
     public Page<AdmissionResult> pageOwnAdmission(Long accountId, long page, long size) {
         StudentProfile student = requireStudent(accountId);
         return mapAdmissionPage(admissionResultMapper.selectPage(
-            Page.of(page, size),
-            new LambdaQueryWrapper<LegacyAdmissionResults>()
-                .eq(LegacyAdmissionResults::getStudentID, student.getStudentNo())
-                .orderByDesc(LegacyAdmissionResults::getAddtime)
+                Page.of(page, size),
+                new LambdaQueryWrapper<LegacyAdmissionResults>()
+                        .eq(LegacyAdmissionResults::getStudentID, student.getStudentNo())
+                        .orderByDesc(LegacyAdmissionResults::getAddtime)
         ));
     }
 
     public Page<AcademicResult> pageAdminAcademic(long page, long size) {
         return mapAcademicPage(
-            academicResultMapper.selectPage(Page.of(page, size), new LambdaQueryWrapper<LegacyResultsInformation>().orderByDesc(LegacyResultsInformation::getAddtime))
+                academicResultMapper.selectPage(Page.of(page, size), new LambdaQueryWrapper<LegacyResultsInformation>().orderByDesc(LegacyResultsInformation::getAddtime))
         );
     }
 
@@ -107,10 +107,10 @@ public class AdmissionService {
     public Page<AcademicResult> pageOwnAcademic(Long accountId, long page, long size) {
         StudentProfile student = requireStudent(accountId);
         return mapAcademicPage(academicResultMapper.selectPage(
-            Page.of(page, size),
-            new LambdaQueryWrapper<LegacyResultsInformation>()
-                .eq(LegacyResultsInformation::getStudentID, student.getStudentNo())
-                .orderByDesc(LegacyResultsInformation::getAddtime)
+                Page.of(page, size),
+                new LambdaQueryWrapper<LegacyResultsInformation>()
+                        .eq(LegacyResultsInformation::getStudentID, student.getStudentNo())
+                        .orderByDesc(LegacyResultsInformation::getAddtime)
         ));
     }
 
@@ -178,9 +178,9 @@ public class AdmissionService {
         result.setCreatedAt(legacy.getAddtime());
         result.setUpdatedAt(legacy.getFeedbackTime() != null ? legacy.getFeedbackTime() : legacy.getAddtime());
         LegacyCollegeApplication application = legacy.getRegistrationNumber() == null ? null : universityApplicationMapper.selectOne(
-            new LambdaQueryWrapper<LegacyCollegeApplication>()
-                .eq(LegacyCollegeApplication::getRegistrationNumber, legacy.getRegistrationNumber())
-                .last("limit 1")
+                new LambdaQueryWrapper<LegacyCollegeApplication>()
+                        .eq(LegacyCollegeApplication::getRegistrationNumber, legacy.getRegistrationNumber())
+                        .last("limit 1")
         );
         result.setApplicationId(application == null ? null : application.getId());
         result.setResultStatus(legacy.getAdmissionResults());

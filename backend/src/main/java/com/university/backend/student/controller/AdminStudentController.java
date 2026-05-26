@@ -7,6 +7,7 @@ import com.university.backend.student.application.AdminStudentService;
 import com.university.backend.student.domain.StudentProfile;
 import com.university.backend.student.dto.AdminStudentRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,9 +30,11 @@ public class AdminStudentController {
 
     @GetMapping
     public ApiResponse<PageResponse<StudentProfile>> students(
-        @RequestParam(defaultValue = "1") long page,
-        @RequestParam(defaultValue = "10") long size,
-        @RequestParam(required = false) String keyword
+            @RequestParam(defaultValue = "1") long page,
+            @RequestParam(defaultValue = "10") long size,
+            @RequestParam(required = false)
+            @Pattern(regexp = "^[a-zA-Z0-9 +]*$", message = "搜索关键词只能包含字母、数字、空格和加号")
+            String keyword
     ) {
         Page<StudentProfile> result = studentService.page(page, size, keyword);
         return ApiResponse.ok(PageResponse.from(result));

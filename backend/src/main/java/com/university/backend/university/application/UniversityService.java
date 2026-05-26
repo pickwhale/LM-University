@@ -62,7 +62,7 @@ public class UniversityService {
         universityMapper.insert(university);
         return map(university);
     }
-   // @CacheEvict(value = "university", key = "#id")
+    //@CacheEvict(value = "university", key = "#id")
     public University update(Long id, UniversityRequest request) {
         LegacyUniversityInformation university = getLegacyRequired(id);
         apply(university, request);

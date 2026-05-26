@@ -58,3 +58,4 @@ SELECT 'orphan_academic_result_student' AS check_name, r.id AS offending_row_id,
 FROM university.resultsinformation r
 LEFT JOIN university.student s ON s.studentID = r.studentID
 WHERE r.studentID IS NOT NULL AND s.id IS NULL;
+aza

@@ -13,6 +13,8 @@ import com.university.backend.content.dto.NewsArticleRequest;
 import com.university.backend.content.dto.SitePageRequest;
 import jakarta.validation.Valid;
 import java.util.List;
+
+import jakarta.validation.constraints.Pattern;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,7 +47,9 @@ public class AdminContentController {
     public ApiResponse<PageResponse<NewsArticle>> news(
         @RequestParam(defaultValue = "1") long page,
         @RequestParam(defaultValue = "10") long size,
-        @RequestParam(required = false) String keyword
+        @RequestParam(required = false)
+        @Pattern(regexp = "^[a-zA-Z ]*$", message = "搜索关键词只能包含字母和空格")
+        String keyword
     ) {
         return ApiResponse.ok(PageResponse.from(newsArticleService.page(page, size, keyword)));
     }

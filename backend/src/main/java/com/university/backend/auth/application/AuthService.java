@@ -66,7 +66,7 @@ public class AuthService {
             AuthenticatedAccount account = new AuthenticatedAccount(admin.getId(), admin.getUsername(), Role.ADMIN);
             return issueTokens(account, toAdminResponse(admin));
         }
-        throw ApiException.unauthorized("管理员账号或密码错误");
+        throw ApiException.unauthorized("Incorrect administrator username or password");
     }
 
     private AuthTokenResponse loginStudent(LoginRequest request) {
@@ -79,7 +79,7 @@ public class AuthService {
             AuthenticatedAccount account = new AuthenticatedAccount(student.getId(), student.getStudentID(), Role.STUDENT);
             return issueTokens(account, toStudentResponse(student));
         }
-        throw ApiException.unauthorized("学生学号或密码错误");
+        throw ApiException.unauthorized("Student ID or password incorrect");
     }
 
     public AuthTokenResponse refresh(RefreshTokenRequest request) {

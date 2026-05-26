@@ -56,15 +56,15 @@ public class StudentRecommendationService {
     private final LegacyAdmissionResultsMapper admissionResultMapper;
 
     public StudentRecommendationService(
-        StudentProfileService studentProfileService,
-        LegacyStudentMapper studentMapper,
-        LegacyResultsInformationMapper resultMapper,
-        LegacyProfessionalInformationMapper majorMapper,
-        LegacyUniversityInformationMapper universityMapper,
-        LegacyStoreupMapper favoriteMapper,
-        LegacyCollegeApplicationMapper universityApplicationMapper,
-        LegacyProfessionalRegistrationMapper majorApplicationMapper,
-        LegacyAdmissionResultsMapper admissionResultMapper
+            StudentProfileService studentProfileService,
+            LegacyStudentMapper studentMapper,
+            LegacyResultsInformationMapper resultMapper,
+            LegacyProfessionalInformationMapper majorMapper,
+            LegacyUniversityInformationMapper universityMapper,
+            LegacyStoreupMapper favoriteMapper,
+            LegacyCollegeApplicationMapper universityApplicationMapper,
+            LegacyProfessionalRegistrationMapper majorApplicationMapper,
+            LegacyAdmissionResultsMapper admissionResultMapper
     ) {
         this.studentProfileService = studentProfileService;
         this.studentMapper = studentMapper;
@@ -91,10 +91,10 @@ public class StudentRecommendationService {
         Double latestGrade = studentScores.get(student.getStudentNo());
         if (latestGrade == null) {
             return new StudentRecommendationResponse(
-                null,
-                "暂无成绩，无法生成推荐",
-                List.of(),
-                List.of()
+                    null,
+                    "No grade found, cannot generate recommendations",
+                    List.of(),
+                    List.of()
             );
         }
 
@@ -107,23 +107,23 @@ public class StudentRecommendationService {
         InteractionScores interactionScores = buildInteractionScores(similarity, studentNoById);
 
         List<MajorCandidate> majorCandidates = buildMajorCandidates(
-            latestGrade,
-            allMajors,
-            universityByName,
-            interactionScores.majorScores()
+                latestGrade,
+                allMajors,
+                universityByName,
+                interactionScores.majorScores()
         );
         List<RecommendationItem> majorItems = rankMajorCandidates(majorCandidates, safeLimit);
         List<RecommendationItem> universityItems = rankUniversityCandidates(
-            latestGrade,
-            majorCandidates,
-            universityByName,
-            interactionScores.universityScores(),
-            safeLimit
+                latestGrade,
+                majorCandidates,
+                universityByName,
+                interactionScores.universityScores(),
+                safeLimit
         );
 
         String message = majorItems.isEmpty() && universityItems.isEmpty()
-            ? "当前成绩未匹配到可推荐的院校或专业"
-            : "已根据最新成绩生成推荐";
+                ? "No universities or majors matched with your current score"
+                : "Recommendations generated based on your latest grade";
         return new StudentRecommendationResponse(latestGrade, message, universityItems, majorItems);
     }
 
@@ -151,8 +151,8 @@ public class StudentRecommendationService {
         LocalDateTime rightTime = right.getAddtime();
         if (leftTime == null) {
             return rightTime == null && left.getId() != null && right.getId() != null && right.getId() > left.getId()
-                ? right
-                : left;
+                    ? right
+                    : left;
         }
         if (rightTime == null) {
             return left;
@@ -161,8 +161,8 @@ public class StudentRecommendationService {
     }
 
     private Map<String, Double> studentScoresByStudentNo(
-        List<LegacyStudent> students,
-        Map<String, LegacyResultsInformation> latestResults
+            List<LegacyStudent> students,
+            Map<String, LegacyResultsInformation> latestResults
     ) {
         Map<String, Double> scores = new HashMap<>();
         for (Map.Entry<String, LegacyResultsInformation> entry : latestResults.entrySet()) {
@@ -200,10 +200,10 @@ public class StudentRecommendationService {
     }
 
     private SimilarityContext buildSimilarityContext(
-        StudentProfile currentStudent,
-        double currentGrade,
-        Map<String, Double> studentScores,
-        Map<Long, String> studentNoById
+            StudentProfile currentStudent,
+            double currentGrade,
+            Map<String, Double> studentScores,
+            Map<Long, String> studentNoById
     ) {
         Map<String, Double> byStudentNo = new HashMap<>();
         Map<Long, Double> byStudentId = new HashMap<>();
@@ -298,10 +298,10 @@ public class StudentRecommendationService {
             return baseWeight;
         }
         String normalized = status.trim().toLowerCase(Locale.ROOT);
-        if (normalized.contains("拒") || normalized.contains("reject") || normalized.equals("no")) {
+        if (normalized.contains("reject") || normalized.equals("no")) {
             return baseWeight * 0.25;
         }
-        if (normalized.contains("通") || normalized.contains("approved") || normalized.equals("yes")) {
+        if (normalized.contains("approved") || normalized.equals("yes")) {
             return baseWeight * 1.25;
         }
         return baseWeight;
@@ -312,7 +312,7 @@ public class StudentRecommendationService {
             return ADMISSION_WEIGHT;
         }
         String normalized = result.trim().toLowerCase(Locale.ROOT);
-        if (normalized.contains("拒") || normalized.contains("fail") || normalized.contains("reject")) {
+        if (normalized.contains("reject") || normalized.contains("fail")) {
             return ADMISSION_WEIGHT * 0.25;
         }
         return ADMISSION_WEIGHT;
@@ -331,10 +331,10 @@ public class StudentRecommendationService {
     }
 
     private List<MajorCandidate> buildMajorCandidates(
-        double latestGrade,
-        List<LegacyProfessionalInformation> majors,
-        Map<String, LegacyUniversityInformation> universityByName,
-        Map<Long, Double> majorInteractionScores
+            double latestGrade,
+            List<LegacyProfessionalInformation> majors,
+            Map<String, LegacyUniversityInformation> universityByName,
+            Map<Long, Double> majorInteractionScores
     ) {
         List<MajorCandidate> candidates = new ArrayList<>();
         int maxClick = majors.stream().map(LegacyProfessionalInformation::getClicknum).filter(Objects::nonNull).max(Integer::compareTo).orElse(0);
@@ -355,56 +355,56 @@ public class StudentRecommendationService {
             LegacyUniversityInformation university = universityByName.get(major.getUniversityName());
             candidates.add(new MajorCandidate(major, university, cutoff.get(), margin, cfScore, finalScore));
         }
-        
+
         candidates.sort(Comparator.comparingDouble(MajorCandidate::margin).thenComparingDouble(MajorCandidate::score));
         return candidates;
     }
 
     private List<RecommendationItem> rankMajorCandidates(List<MajorCandidate> candidates, int limit) {
         return candidates.stream()
-            .limit(limit)
-            .map(this::toMajorItem)
-            .toList();
+                .limit(limit)
+                .map(this::toMajorItem)
+                .toList();
     }
 
     private RecommendationItem toMajorItem(MajorCandidate candidate) {
         LegacyProfessionalInformation major = candidate.major();
         String type = recommendationType(candidate.margin());
         String reason = String.format(
-            Locale.ROOT,
-            "你的最新成绩为 %.1f 分，已达到该专业 %d 分的分数线，高出 %.1f 分，属于%s选择%s。",
-            candidate.cutoff() + candidate.margin(),
-            candidate.cutoff(),
-            candidate.margin(),
-            type,
-            candidate.cfScore() > 0 ? "；相似成绩学生也关注或报名过该专业" : ""
+                Locale.ROOT,
+                "Your latest score is %.1f, which meets the cutoff of %d for this major, exceeding by %.1f points. This is a %s choice%s.",
+                candidate.cutoff() + candidate.margin(),
+                candidate.cutoff(),
+                candidate.margin(),
+                type,
+                candidate.cfScore() > 0 ? "; students with similar scores have also favorited or applied for this major" : ""
         );
         return new RecommendationItem(
-            major.getId(),
-            "MAJOR",
-            major.getMajorName(),
-            major.getUniversityName(),
-            major.getProvince(),
-            candidate.university() == null ? null : candidate.university().getInstitutionType(),
-            major.getMajorCode(),
-            major.getCover(),
-            candidate.cutoff() + candidate.margin(),
-            candidate.cutoff(),
-            candidate.margin(),
-            type,
-            reason,
-            round(candidate.score()),
-            major.getClicknum() == null ? 0 : major.getClicknum(),
-            major.getEnrollmentQuota()
+                major.getId(),
+                "MAJOR",
+                major.getMajorName(),
+                major.getUniversityName(),
+                major.getProvince(),
+                candidate.university() == null ? null : candidate.university().getInstitutionType(),
+                major.getMajorCode(),
+                major.getCover(),
+                candidate.cutoff() + candidate.margin(),
+                candidate.cutoff(),
+                candidate.margin(),
+                type,
+                reason,
+                round(candidate.score()),
+                major.getClicknum() == null ? 0 : major.getClicknum(),
+                major.getEnrollmentQuota()
         );
     }
 
     private List<RecommendationItem> rankUniversityCandidates(
-        double latestGrade,
-        List<MajorCandidate> majorCandidates,
-        Map<String, LegacyUniversityInformation> universityByName,
-        Map<String, Double> universityInteractionScores,
-        int limit
+            double latestGrade,
+            List<MajorCandidate> majorCandidates,
+            Map<String, LegacyUniversityInformation> universityByName,
+            Map<String, Double> universityInteractionScores,
+            int limit
     ) {
         Map<String, List<MajorCandidate>> majorsByUniversity = new LinkedHashMap<>();
         for (MajorCandidate candidate : majorCandidates) {
@@ -418,44 +418,44 @@ public class StudentRecommendationService {
         double maxCfScore = Math.max(1.0, universityInteractionScores.values().stream().max(Double::compareTo).orElse(0.0));
 
         List<RecommendationItem> items = new ArrayList<>(majorsByUniversity.entrySet().stream()
-            .map(entry -> toUniversityItem(
-                latestGrade,
-                entry.getKey(),
-                entry.getValue(),
-                universityByName.get(entry.getKey()),
-                universityInteractionScores.getOrDefault(entry.getKey(), 0.0),
-                maxCfScore,
-                maxClick,
-                maxEligibleMajors
-            ))
-            .filter(Objects::nonNull)
-            .toList());
-        
+                .map(entry -> toUniversityItem(
+                        latestGrade,
+                        entry.getKey(),
+                        entry.getValue(),
+                        universityByName.get(entry.getKey()),
+                        universityInteractionScores.getOrDefault(entry.getKey(), 0.0),
+                        maxCfScore,
+                        maxClick,
+                        maxEligibleMajors
+                ))
+                .filter(Objects::nonNull)
+                .toList());
+
         items.sort(Comparator.comparingDouble((RecommendationItem item) -> {
             Double margin = item.margin();
             return margin == null ? Double.MAX_VALUE : margin;
         }).thenComparingDouble(RecommendationItem::score));
-        
+
         return items.stream().limit(limit).toList();
     }
 
     private RecommendationItem toUniversityItem(
-        double latestGrade,
-        String universityName,
-        List<MajorCandidate> eligibleMajors,
-        LegacyUniversityInformation university,
-        double cfRawScore,
-        double maxCfScore,
-        int maxClick,
-        int maxEligibleMajors
+            double latestGrade,
+            String universityName,
+            List<MajorCandidate> eligibleMajors,
+            LegacyUniversityInformation university,
+            double cfRawScore,
+            double maxCfScore,
+            int maxClick,
+            int maxEligibleMajors
     ) {
         if (university == null || eligibleMajors.isEmpty()) {
             return null;
         }
-        
+
         eligibleMajors.sort(Comparator.comparingDouble(MajorCandidate::margin));
         MajorCandidate representativeMajor = eligibleMajors.get(0);
-        
+
         double marginScore = Math.min(representativeMajor.margin() / 80.0, 1.0);
         double cfScore = cfRawScore / maxCfScore;
         double popularityScore = normalize(university.getClicknum(), maxClick);
@@ -463,31 +463,31 @@ public class StudentRecommendationService {
         double score = 0.55 * marginScore + 0.30 * cfScore + 0.10 * popularityScore + 0.05 * eligibleMajorScore;
         String type = recommendationType(representativeMajor.margin());
         String reason = String.format(
-            Locale.ROOT,
-            "你的最新成绩为 %.1f 分，当前可覆盖该校 %d 个专业，最高可高出分数线 %.1f 分，属于%s院校%s。",
-            latestGrade,
-            eligibleMajors.size(),
-            eligibleMajors.stream().mapToDouble(MajorCandidate::margin).max().orElse(0),
-            type,
-            cfScore > 0 ? "；相似成绩学生对该校有收藏、报名或录取记录" : ""
+                Locale.ROOT,
+                "Your latest score is %.1f. You have %d eligible major(s) at this university, with the highest margin of %.1f points. This is a %s choice%s.",
+                latestGrade,
+                eligibleMajors.size(),
+                eligibleMajors.stream().mapToDouble(MajorCandidate::margin).max().orElse(0),
+                type,
+                cfScore > 0 ? "; students with similar scores have favorited, applied to, or been admitted by this university" : ""
         );
         return new RecommendationItem(
-            university.getId(),
-            "UNIVERSITY",
-            universityName,
-            universityName,
-            university.getProvince(),
-            university.getInstitutionType(),
-            null,
-            university.getUniversityImage(),
-            latestGrade,
-            representativeMajor.cutoff(),
-            representativeMajor.margin(),
-            type,
-            reason,
-            round(score),
-            university.getClicknum() == null ? 0 : university.getClicknum(),
-            null
+                university.getId(),
+                "UNIVERSITY",
+                universityName,
+                universityName,
+                university.getProvince(),
+                university.getInstitutionType(),
+                null,
+                university.getUniversityImage(),
+                latestGrade,
+                representativeMajor.cutoff(),
+                representativeMajor.margin(),
+                type,
+                reason,
+                round(score),
+                university.getClicknum() == null ? 0 : university.getClicknum(),
+                null
         );
     }
 
@@ -508,12 +508,12 @@ public class StudentRecommendationService {
 
     private String recommendationType(double margin) {
         if (margin < 10) {
-            return "冲刺";
+            return "Reach";
         }
         if (margin < 30) {
-            return "稳妥";
+            return "Match";
         }
-        return "保底";
+        return "Safety";
     }
 
     private double normalize(Integer value, int max) {
@@ -534,12 +534,12 @@ public class StudentRecommendationService {
     }
 
     private record MajorCandidate(
-        LegacyProfessionalInformation major,
-        LegacyUniversityInformation university,
-        int cutoff,
-        double margin,
-        double cfScore,
-        double score
+            LegacyProfessionalInformation major,
+            LegacyUniversityInformation university,
+            int cutoff,
+            double margin,
+            double cfScore,
+            double score
     ) {
     }
 }

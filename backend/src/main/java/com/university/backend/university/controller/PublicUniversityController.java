@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.constraints.Pattern;
 
 @RestController
 @RequestMapping("/api/v1/public")
@@ -34,7 +35,9 @@ public class PublicUniversityController {
     public ApiResponse<PageResponse<University>> universities(
         @RequestParam(defaultValue = "1") long page,
         @RequestParam(defaultValue = "10") long size,
-        @RequestParam(required = false) String keyword,
+        @RequestParam(required = false)
+        @Pattern(regexp = "^[a-zA-Z ]*$", message = "搜索关键词只能包含字母和空格")
+        String keyword,
         @RequestParam(required = false) Long provinceId
     ) {
         return ApiResponse.ok(PageResponse.from(universityService.pagePublic(page, size, keyword, provinceId)));

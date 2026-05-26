@@ -10,6 +10,8 @@ import com.university.backend.university.domain.University;
 import com.university.backend.university.dto.UniversityRequest;
 import jakarta.validation.Valid;
 import java.util.List;
+
+import jakarta.validation.constraints.Pattern;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,7 +59,9 @@ public class AdminUniversityController {
     public ApiResponse<PageResponse<University>> universities(
         @RequestParam(defaultValue = "1") long page,
         @RequestParam(defaultValue = "10") long size,
-        @RequestParam(required = false) String keyword
+        @RequestParam(required = false)
+        @Pattern(regexp = "^[a-zA-Z ]*$", message = "搜索关键词只能包含字母和空格")
+        String keyword
     ) {
         return ApiResponse.ok(PageResponse.from(universityService.pageAdmin(page, size, keyword)));
     }

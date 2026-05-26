@@ -120,6 +120,7 @@ public class GenericAiClient {
             6. 字段名使用加粗，如 **录取分数线**、**分数优势**。
             7. 推荐院校和推荐专业必须分别用二级标题标注（## 推荐院校、## 推荐专业）。
             8. 回答结尾给出一句简短的填报建议。
+            9. 用英文回答
             """;
         return basePrompt + formatPrompt;
     }

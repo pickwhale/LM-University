@@ -6,6 +6,7 @@ import com.university.backend.content.application.NewsArticleService;
 import com.university.backend.content.application.SitePageService;
 import com.university.backend.content.domain.NewsArticle;
 import com.university.backend.content.domain.SitePage;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,9 @@ public class PublicContentController {
     public ApiResponse<PageResponse<NewsArticle>> news(
         @RequestParam(defaultValue = "1") long page,
         @RequestParam(defaultValue = "10") long size,
-        @RequestParam(required = false) String keyword
+        @RequestParam(required = false)
+        @Pattern(regexp = "^[a-zA-Z ]*$", message = "搜索关键词只能包含字母和空格")
+        String keyword
     ) {
         return ApiResponse.ok(PageResponse.from(newsArticleService.page(page, size, keyword)));
     }

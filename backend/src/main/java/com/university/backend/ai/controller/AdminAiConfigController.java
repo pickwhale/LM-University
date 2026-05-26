@@ -43,8 +43,8 @@ public class AdminAiConfigController {
         try {
             AiProviderConfig config = aiConfigService.getConfig();
             StringBuilder answer = new StringBuilder();
-            String message = request == null || request.message() == null ? "请回复：连接测试成功" : request.message();
-            genericAiClient.stream(config, message, "后台 AI 配置连接测试，不包含学生隐私数据。", "[]", delta -> {
+            String message = request == null || request.message() == null ? "Please reply: Connection test successful." : request.message();
+            genericAiClient.stream(config, message, "The background AI configuration connection test does not include student privacy data.", "[]", delta -> {
                 if (answer.length() < 500) {
                     answer.append(delta);
                 }

@@ -1099,7 +1099,7 @@
       <div class="dialog-grid">
         <label class="field">
           <span>{{ t('admin.table.applicationId') }}</span>
-          <input v-model.number="admissionResultForm.applicationId" type="number" min="1" />
+          <input v-model="admissionResultForm.applicationId" type="text" min="1" />
         </label>
         <label class="field">
           <span>{{ t('admin.field.resultStatus') }}</span>
